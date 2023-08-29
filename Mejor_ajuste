@@ -10,10 +10,10 @@ import java.util.Comparator;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-public class Mejor_Ajuste {
+public class mejor_ajuste {
 
     public static void main(String[] args) {
-        int Memoria = 2000;
+        int Memoria = 1500;
         boolean continuar = true;
         int N;
 
@@ -32,32 +32,37 @@ public class Mejor_Ajuste {
             particiones.add(new Nparticion(contador, valor));
             ++contador;
         }
-
-        procesos.add(new Nproces("JAVA", 200)); 
-        procesos.add(new Nproces("WORD", 700));        
-        procesos.add(new Nproces("PAINT", 1000));
-        procesos.add(new Nproces("S.O", 100));  
-
         
-        Collections.sort(particiones, Comparator.comparingInt((Nparticion p) -> p.tamano).reversed());
+        procesos.add(new Nproces("S.O", 100));  
+        procesos.add(new Nproces("JAVA", 300)); 
+        procesos.add(new Nproces("WORD", 450));        
+        procesos.add(new Nproces("PAINT", 399));
+        procesos.add(new Nproces("excel", 150));  
+
+        Collections.sort(particiones, Comparator.comparingInt((Nparticion p) -> p.tamano));
 
         for (int k = 0; k < procesos.size(); k++) {
             Nproces Nproces = procesos.get(k);
             boolean asignado = false;
+            int asignadoIndex = 0;
 
             for (int j = 0; j < particiones.size(); j++) {
                 Nparticion Nparticion = particiones.get(j);
 
                 if (!Nparticion.ocupada && Nparticion.tamano >= Nproces.tamano) {
-                    Nparticion.ocupada = true;
-                    Nparticion.nombreNproces = Nproces.nombre;
-                    asignado = true;
-                    System.out.println(Nproces.nombre + "<-- asignado a la particion --> " + Nparticion.id);
-                    break;
+                    if (!asignado || Nparticion.tamano < particiones.get(asignadoIndex).tamano) {
+                        asignado = true;
+                        asignadoIndex = j;
+                    }
                 }
             }
 
-            if (!asignado) {
+            if (asignado) {
+                Nparticion asignadaParticion = particiones.get(asignadoIndex);
+                asignadaParticion.ocupada = true;
+                asignadaParticion.nombreNproces = Nproces.nombre;
+                System.out.println(Nproces.nombre + "<-- asignado a la particion --> " + asignadaParticion.id);
+            } else {
                 System.out.println(Nproces.nombre + " <-- no fue asignado a la memoria  ");
             }
         }
